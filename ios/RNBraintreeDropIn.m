@@ -1,6 +1,8 @@
+#import "BraintreeVenmo.h"
 #import "RNBraintreeDropIn.h"
 #import <React/RCTUtils.h>
 #import "BTThreeDSecureRequest.h"
+
 
 @implementation RNBraintreeDropIn
 
@@ -8,7 +10,48 @@
 {
     return dispatch_get_main_queue();
 }
+
 RCT_EXPORT_MODULE(RNBraintreeDropIn)
+
+
+RCT_EXPORT_METHOD(setup:(NSDictionary*)options){
+        NSString* clientToken = options[@"clientToken"];
+        BTAPIClient *apiClient = [[BTAPIClient alloc] initWithAuthorization:clientToken];
+        self.venmoDriver = [[BTVenmoDriver alloc] initWithAPIClient:apiClient];
+    //    BOOL isVenmoReady = [self.venmoDriver isiOSAppAvailableForAppSwitch];
+        self.dataCollector = [[BTDataCollector alloc] initWithAPIClient:apiClient];
+        [self.dataCollector collectCardFraudData:^(NSString * _Nonnull deviceDataCollector) {
+            // Save deviceData
+            self.deviceDataCollector = deviceDataCollector;
+        }];
+}
+
+RCT_EXPORT_METHOD(getVenmoStatus:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject){
+
+    BOOL isVenmoReady = [self.venmoDriver isiOSAppAvailableForAppSwitch];
+
+    resolve([NSNumber numberWithBool:isVenmoReady]);
+}
+
+RCT_EXPORT_METHOD(getNonce:(NSDictionary*)options resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    [self.venmoDriver authorizeAccountAndVault:YES completion:^(BTVenmoAccountNonce * _Nullable venmoAccount, NSError * _Nullable error) {
+            
+        if(error != NULL){
+            reject(@"VENMO_ERROR",[error localizedDescription], nil);
+            return;
+        }
+        
+        if(venmoAccount == NULL) {
+            reject(@"NO_ACCOUNT",@"Unable to get venmo details!",nil);
+            return;
+        }
+          NSMutableDictionary* result = [NSMutableDictionary new];
+          [result setObject:venmoAccount.nonce forKey:@"nonce"];
+          [result setObject:self.deviceDataCollector forKey:@"deviceData"];
+          resolve(result);
+    }];
+    
+}
 
 RCT_EXPORT_METHOD(show:(NSDictionary*)options resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {

@@ -11,13 +11,12 @@
 #import "BraintreeDropIn.h"
 #import "BTCardNonce.h"
 #import "BTDataCollector.h"
-
+#import "BraintreeVenmo.h"
 #import "BraintreeApplePay.h"
 
 @interface RNBraintreeDropIn : NSObject <RCTBridgeModule>
-
 @property (nonatomic, strong) UIViewController *_Nonnull reactRoot;
-
+@property (nonatomic, strong) BTVenmoDriver *venmoDriver;
 // Retain your `BTDataCollector` instance for your entire application lifecycle.
 @property (nonatomic, strong) BTDataCollector *_Nonnull dataCollector;
 
