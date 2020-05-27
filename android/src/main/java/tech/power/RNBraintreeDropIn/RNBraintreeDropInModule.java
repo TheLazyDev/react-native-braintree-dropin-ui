@@ -72,7 +72,7 @@ public class RNBraintreeDropInModule extends ReactContextBaseJavaModule {
 
 
   @ReactMethod
-  public void getVenmoStatus(final Promise promise) {
+  public void isVenmoReady(final Promise promise) {
     boolean venmoReady = false;
 
     if(connectionConfig != null){
@@ -153,7 +153,7 @@ public class RNBraintreeDropInModule extends ReactContextBaseJavaModule {
     }
   }
   @ReactMethod
-  public void getNonce(final ReadableMap options, final Promise promise) {
+  public void getNonce(final Promise promise) {
     mPromise = promise;
     try {
       // mBraintreeFragment is ready to use!

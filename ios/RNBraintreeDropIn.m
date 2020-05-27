@@ -26,14 +26,14 @@ RCT_EXPORT_METHOD(setup:(NSDictionary*)options){
         }];
 }
 
-RCT_EXPORT_METHOD(getVenmoStatus:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject){
+RCT_EXPORT_METHOD(isVenmoReady:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject){
 
     BOOL isVenmoReady = [self.venmoDriver isiOSAppAvailableForAppSwitch];
 
     resolve([NSNumber numberWithBool:isVenmoReady]);
 }
 
-RCT_EXPORT_METHOD(getNonce:(NSDictionary*)options resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(getNonce:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     [self.venmoDriver authorizeAccountAndVault:YES completion:^(BTVenmoAccountNonce * _Nullable venmoAccount, NSError * _Nullable error) {
             
         if(error != NULL){
