@@ -261,7 +261,7 @@ public class RNBraintreeDropInModule extends ReactContextBaseJavaModule {
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
-      if (resultCode == Activity.RESULT_OK) {
+      if (resultCode == Activity.RESULT_OK && requestCode == DROP_IN_REQUEST) {
         Bundle extras = data.getExtras();
         String nonce = extras.getString(EXTRA_PAYMENT_METHOD_NONCE);
         String venmoUsername = extras.getString(EXTRA_USER_NAME);
